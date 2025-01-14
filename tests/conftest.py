@@ -2,15 +2,20 @@ import pytest_asyncio
 import os
 from homeassistant.core import HomeAssistant
 from typing import AsyncGenerator
-from typing import Any, Optional
+from typing import Optional, List
 
 
-class EntityAssertion:
+class BaseAssertion:
+    async def check(self, hass: HomeAssistant):
+        raise NotImplementedError()
+
+
+class EntityAssertion(BaseAssertion):
     def __init__(self, entity_id: str):
         self.entity_id = entity_id
         self.attribute = None
-        self.fn = None
         self.value_to_check = None
+        self.fn = None
         # TODO: Set to False if something has changed?
         self.checked = False
 
@@ -46,9 +51,9 @@ class EntityAssertion:
 class MockHomeAssistant(HomeAssistant):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.assertions = []
+        self.assertions: List[BaseAssertion] = []
 
-    def assert_entity(self, entity_id: str, *, attribute: Optional[str] = None, expected: Optional[str] = None):
+    def assert_entity(self, entity_id: str, *, attribute: Optional[str] = None, expected: Optional[str] = None) -> EntityAssertion:
         assertion = EntityAssertion(entity_id)
         if attribute is not None:
             assertion.attribute(attribute)
@@ -58,7 +63,6 @@ class MockHomeAssistant(HomeAssistant):
         return assertion
     
     async def check_assertions(self):
-        print(f"Checking {len(self.assertions)} assertions")
         for assertion in self.assertions:
             await assertion.check(self)
         self.assertions = []
