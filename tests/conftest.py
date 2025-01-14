@@ -43,7 +43,7 @@ class EntityAssertion:
         self.checked = True
 
 
-class TestHomeAssistant(HomeAssistant):
+class MockHomeAssistant(HomeAssistant):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.assertions = []
@@ -65,8 +65,8 @@ class TestHomeAssistant(HomeAssistant):
 
 
 @pytest_asyncio.fixture
-async def hass() -> AsyncGenerator[TestHomeAssistant]:
-    hass = TestHomeAssistant(os.path.dirname(os.path.dirname(__file__)))
+async def hass() -> AsyncGenerator[MockHomeAssistant]:
+    hass = MockHomeAssistant(os.path.dirname(os.path.dirname(__file__)))
     await hass.async_start()
     yield hass
     await hass.check_assertions()
