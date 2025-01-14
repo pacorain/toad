@@ -1,4 +1,4 @@
-from tests.conftest import MockHomeAssistant
+from mockhass import MockHomeAssistant
 import pytest
 
 @pytest.mark.asyncio
