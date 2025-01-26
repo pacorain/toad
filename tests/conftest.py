@@ -1,12 +1,13 @@
 import pytest_asyncio
-import os
 from typing import AsyncGenerator
 from mockhass import MockHomeAssistant
+from pathlib import Path
 
 
 @pytest_asyncio.fixture
 async def hass() -> AsyncGenerator[MockHomeAssistant]:
-    hass = MockHomeAssistant(os.path.dirname(os.path.dirname(__file__)))
+    config_dir = Path(__file__).parent.parent / "homeassistant"
+    hass = MockHomeAssistant(config_dir.absolute())
     await hass.async_start()
     yield hass
     await hass.check_assertions()

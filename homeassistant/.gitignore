@@ -1,0 +1,15 @@
+# Ignore everything by default
+*
+
+# Commit this file
+!.gitignore
+
+# Commit YAML config files
+!*.yaml
+
+# Commit secrets *template*, but not the file with actual secrets
+secrets.yaml
+!*.yaml.tpl
+
+# Commit readme files
+!*.md
