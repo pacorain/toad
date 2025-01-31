@@ -41,7 +41,7 @@ jobs:
         runs-on: ubuntu-latest
         name: Check Home Assistant config
         needs: path_check
-        if: needs.path_check.outputs.config == 'true'
+        if: "${{ needs.path_check.outputs.config == 'true' }}"
         steps:
             - name: Check out from GitHub
               uses: actions/checkout@v3
