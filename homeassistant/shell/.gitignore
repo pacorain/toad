@@ -1,0 +1,5 @@
+!*.sh
+!*.sh.tpl
+
+# Files with secrets
+pull.sh

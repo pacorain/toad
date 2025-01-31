@@ -1,0 +1,28 @@
+# Continuous integration
+
+shell_command:
+  update_home_assistant_config: 'sh /config/shell/pull.sh'
+
+automation:
+  - id: deploy_home_assistant_config
+    alias: Update Home Assistant config
+    triggers:
+      - trigger: webhook
+        alias: Triggered by GitHub Actions
+        webhook_id: !secret webhook_ci_push
+        allowed_methods: [POST]
+        local_only: true
+    
+    actions:
+      - alias: Pull new configuration
+        service: shell_command.update_home_assistant_config
+        data:
+          url: |
+            {{ trigger.json.presigned_url }}
+
+      # TODO: Handle exit codes?
+      # TODO: Only reload parts of config based on some data from the webhook?
+
+      - alias: Reload YAML
+        service: homeassistant.reload_all
+    
