@@ -1,68 +1,18 @@
-name: Hass CI/CD
+name: Hass Deploy
+
+concurrency: homeassistant
 
 on:
     push:
         branches:
             - main
-    pull_request:
+    workflow_dispatch:
 
 jobs:
-    test:
+    deployment:
         runs-on: ubuntu-latest
-        name: Run tests
-        steps:
-            - name: Check out from GitHub
-              uses: actions/checkout@v4
-            - name: Set up Python
-              uses: actions/setup-python@v4
-              with:
-                python-version: '3.13'
-            - name: Install dependencies
-              run: |
-                pip install --upgrade pip
-                pip install .
-            - name: Run tests
-              run: pytest -vv
-
-    path_check:
-        runs-on: ubuntu-latest
-        name: Check path
-        outputs:
-            config: ${{ steps.path_check.outputs.config }}
-        steps:
-            - name: Check out from GitHub
-              uses: actions/checkout@v3
-            - uses: dorny/paths-filter@v3
-              id: path_check
-              with:
-                filters: |
-                  config:
-                    - "homeassistant/**"
-
-    check_config:
-        runs-on: ubuntu-latest
-        name: Config
-        needs: path_check
-        if: "${{ needs.path_check.outputs.config == 'true' }}"
-        steps:
-            - name: Check out from GitHub
-              uses: actions/checkout@v3
-            - name: Check configuration
-              uses: frenck/action-home-assistant@v1
-              with:
-                path: "./homeassistant"
-                secrets: secrets.yaml.tpl
-                version: stable
-        
-    
-    deploy:
-        runs-on: ubuntu-latest
+        environment: Home
         name: Deploy Home Assistant
-        needs:
-            - path_check
-            - test
-            - check_config
-        if: needs.path_check.outputs.config == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         steps:
             - name: Check out from GitHub
               uses: actions/checkout@v3
@@ -95,7 +45,3 @@ jobs:
             - name: Push to Home Assistant
               run: |
                 curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"$S3_PATH\"}" ${{ secrets.webhook_ci_push }}
-
-
-
-
