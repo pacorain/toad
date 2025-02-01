@@ -39,15 +39,6 @@ jobs:
                   config:
                     - "homeassistant/**"
 
-    # TODO: Remove
-    print_output:
-        runs-on: ubuntu-latest
-        name: Print output
-        needs: path_check
-        steps:
-            - name: Print output
-              run: echo "${{ needs.path_check.outputs.config }}"
-
     check_config:
         runs-on: ubuntu-latest
         name: Check Home Assistant config
@@ -59,7 +50,7 @@ jobs:
             - name: Check configuration
               uses: frenck/action-home-assistant@v1
               with:
-                path: "./config"
+                path: "./homeassistant"
                 secrets: secrets.yaml.tpl
                 version: stable
         
