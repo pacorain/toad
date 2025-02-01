@@ -19,10 +19,13 @@ automation:
         data:
           url: |
             {{ trigger.json.presigned_url }}
+        response_variable: response
 
-      # TODO: Handle exit codes?
+      - if: "{{ response['returncode'] == 0 }}"
+        alias: Check exit code
+        then: 
+          - alias: Reload YAML
+            service: homeassistant.reload_all
+
+      # TODO: Handle other exit codes
       # TODO: Only reload parts of config based on some data from the webhook?
-
-      - alias: Reload YAML
-        service: homeassistant.reload_all
-    
