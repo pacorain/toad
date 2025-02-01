@@ -27,6 +27,8 @@ jobs:
     path_check:
         runs-on: ubuntu-latest
         name: Check path
+        outputs:
+            config: ${{ steps.path_check.outputs.config }}
         steps:
             - name: Check out from GitHub
               uses: actions/checkout@v3
@@ -44,7 +46,7 @@ jobs:
         needs: path_check
         steps:
             - name: Print output
-              run: echo "${{ toJson(steps.path_check) }}"
+              run: echo "${{ needs.path_check.outputs.config }}"
 
     check_config:
         runs-on: ubuntu-latest
