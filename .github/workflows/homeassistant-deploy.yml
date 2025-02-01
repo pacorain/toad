@@ -31,7 +31,7 @@ jobs:
             - name: Check out from GitHub
               uses: actions/checkout@v3
             - uses: dorny/paths-filter@v3
-              id: filter
+              id: path_check
               with:
                 filters: |
                   config:
@@ -44,7 +44,7 @@ jobs:
         needs: path_check
         steps:
             - name: Print output
-              run: echo "config=${{ toJson(steps.filter.outputs) }}"
+              run: echo "${{ toJson(steps.path_check) }}"
 
     check_config:
         runs-on: ubuntu-latest
