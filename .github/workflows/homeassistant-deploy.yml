@@ -44,7 +44,7 @@ jobs:
         needs: path_check
         steps:
             - name: Print output
-              run: echo "config=${{ steps.filter.outputs }}"
+              run: echo "config=${{ toJson(steps.filter.outputs) }}"
 
     check_config:
         runs-on: ubuntu-latest
