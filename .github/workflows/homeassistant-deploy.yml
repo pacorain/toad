@@ -1,4 +1,4 @@
-name: Deploy Home Assistant configuration
+name: Hass CI/CD
 
 on:
     push:
@@ -41,7 +41,7 @@ jobs:
 
     check_config:
         runs-on: ubuntu-latest
-        name: Check Home Assistant config
+        name: Config
         needs: path_check
         if: "${{ needs.path_check.outputs.config == 'true' }}"
         steps:
