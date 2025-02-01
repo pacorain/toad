@@ -26,7 +26,7 @@ jobs:
             - name: Inject 1Password secrets
               env:
                 OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-                OP_VAULT: ${{ secrets.OP_VAULT }}
+                OP_VAULT: ${{ vars.OP_VAULT }}
               run: |
                 for infile in homeassistant/**/*.tpl; do
                   outfile="${infile%.tpl}"
@@ -43,5 +43,7 @@ jobs:
               id: s3path
               run: echo "s3_path=$S3_PATH" >> $GITHUB_ENV
             - name: Push to Home Assistant
+              # Temporarily disable this step - I need to deploy the config once to get the webhook URL
+              if: false
               run: |
-                curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"$S3_PATH\"}" ${{ secrets.webhook_ci_push }}
+                curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"$S3_PATH\"}" ${{ secrets.WEBHOOK_CI_PUSH }}
