@@ -21,6 +21,9 @@ jobs:
               run: |
                 pip install --upgrade pip
                 pip install .
+            - name: Copy secrets
+              run: |
+                cp secrets.yaml.tpl secrets.yaml
             - name: Run tests
               run: pytest -vv --numprocesses auto --dist=loadfile
 
