@@ -13,6 +13,8 @@ jobs:
         runs-on: ubuntu-latest
         environment: Home
         name: Deploy Home Assistant
+        permissions:
+          id-token: write
         steps:
             - name: Check out from GitHub
               uses: actions/checkout@v3
