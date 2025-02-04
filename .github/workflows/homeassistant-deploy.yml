@@ -30,7 +30,7 @@ jobs:
                 OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
                 HASS_VAULT_ID: ${{ vars.OP_VAULT }}
               run: |
-                for infile in homeassistant/**/*.tpl; do
+                for infile in homeassistant/**/*.tpl homeassistant/*.tpl; do
                   outfile="${infile%.tpl}"
                   echo "Processing $infile -> $outfile"
                   op inject -f -i $infile -o $outfile

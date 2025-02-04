@@ -23,7 +23,7 @@ openssl enc -d -aes-256-cbc -in ${tmp_dir}/config.tar.gz.enc -k "${encryption_ke
 threshold=10
 
 if [ -z "$skip_check" ]; then
-    local changed_files=$(rsync -av --dry-run ${tmp_dir}/config/ /config | grep -c '^>f')
+    local changed_files=$(rsync -av --dry-run ${tmp_dir}/config/homeassistant /config | grep -c '^homeassistant/')
     if [ "$changed_files" -gt "$threshold" ]; then
         echo "WARNING: More than $threshold files have changed. Aborting."
         exit 2
@@ -31,4 +31,4 @@ if [ -z "$skip_check" ]; then
 fi
 
 # Sync the files
-rsync -av ${tmp_dir}/config/ ${hass_config_dir}
+rsync -av ${tmp_dir}/config/homeassistant ${hass_config_dir}
