@@ -36,7 +36,7 @@ jobs:
                   op inject -f -i $infile -o $outfile
                 done
             - name: Tar configuration
-              run: tar -czf - homeassistant | openssl enc -aes-256-cbc -e -k ${{ secrets.ENCRYPTION_KEY }} -out homeassistant.tar.gz.enc
+              run: tar -czf - homeassistant | openssl enc -aes-256-cbc -e -k "${{ secrets.ENCRYPTION_KEY }}" -out homeassistant.tar.gz.enc
             - name: Get date path
               run: "echo DATE=$(date +%Y/%m/%d)/$(date +%H%M%S) >> $GITHUB_ENV"
             - name: Publish to S3
