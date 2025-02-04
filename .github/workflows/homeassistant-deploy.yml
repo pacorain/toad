@@ -28,7 +28,7 @@ jobs:
             - name: Inject 1Password secrets
               env:
                 OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-                OP_VAULT: ${{ vars.OP_VAULT }}
+                HASS_VAULT_ID: ${{ vars.OP_VAULT }}
               run: |
                 for infile in homeassistant/**/*.tpl; do
                   outfile="${infile%.tpl}"
