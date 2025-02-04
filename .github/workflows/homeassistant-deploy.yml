@@ -53,7 +53,5 @@ jobs:
                 echo "::add-mask::$url"
                 echo "url=$url" >> $GITHUB_OUTPUT
             - name: Push to Home Assistant
-              # Temporarily disable this step - I need to deploy the config once to get the webhook URL
-              if: false
               run: |
                 curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"${{ steps.presign.outputs.url }}\"}" ${{ secrets.WEBHOOK_CI_PUSH }}
