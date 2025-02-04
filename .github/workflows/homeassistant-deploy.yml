@@ -32,6 +32,7 @@ jobs:
               run: |
                 for infile in homeassistant/**/*.tpl; do
                   outfile="${infile%.tpl}"
+                  echo "Processing $infile -> $outfile"
                   op inject -f -i $infile -o $outfile
                 done
             - name: Tar configuration
