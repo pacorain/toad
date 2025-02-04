@@ -23,7 +23,7 @@ jobs:
                 pip install .
             - name: Copy secrets
               run: |
-                cp homeassistant/secrets.yaml.tplhomeassistant/secrets.yaml
+                cp homeassistant/secrets.yaml.tpl homeassistant/secrets.yaml
             - name: Run tests
               run: pytest -vv --numprocesses auto --dist=loadfile
 
