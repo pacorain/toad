@@ -3,7 +3,7 @@
 # Create a shell command that can be used in automations
 # https://www.home-assistant.io/integrations/shell_command/
 shell_command:
-  update_home_assistant_config: 'sh /config/shell/pull.sh'
+  update_home_assistant_config: 'sh /config/shell/pull.sh "{{ url }}"'
 
 automation:
   - id: deploy_home_assistant_config
