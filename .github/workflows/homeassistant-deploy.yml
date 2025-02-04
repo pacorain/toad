@@ -44,11 +44,14 @@ jobs:
                 S3_PATH: "s3://${{ secrets.S3_BUCKET }}/${{ env.DATE }}_${{ github.sha }}_homeassistant.tar.gz.enc"
               run: |
                 aws s3 cp homeassistant.tar.gz.enc $S3_PATH
-            - name: Save S3 path
-              id: s3path
-              run: echo "s3_path=$S3_PATH" >> $GITHUB_ENV
+            - name: Get pre-signed URL
+              id: presign
+              run: |
+                url=$(aws s3 presign $S3_PATH --expires-in 600)
+                echo "::add-mask::$url"
+                echo "url=$url" >> $GITHUB_OUTPUT
             - name: Push to Home Assistant
               # Temporarily disable this step - I need to deploy the config once to get the webhook URL
               if: false
               run: |
-                curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"$S3_PATH\"}" ${{ secrets.WEBHOOK_CI_PUSH }}
+                curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"${{ steps.presign.outputs.url }}\"}" ${{ secrets.WEBHOOK_CI_PUSH }}
