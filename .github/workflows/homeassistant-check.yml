@@ -22,7 +22,7 @@ jobs:
                 pip install --upgrade pip
                 pip install .
             - name: Run tests
-              run: pytest -vv
+              run: pytest -vv --numprocesses auto --dist=loadfile
 
     path_check:
         runs-on: ubuntu-latest
