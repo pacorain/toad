@@ -37,9 +37,11 @@ jobs:
                 done
             - name: Tar configuration
               run: tar -czf - homeassistant | openssl enc -aes-256-cbc -e -k ${{ secrets.ENCRYPTION_KEY }} -out homeassistant.tar.gz.enc
+            - name: Get date path
+              run: "echo DATE=$(date +%Y/%m/%d)/$(date +%H%M%S) >> $GITHUB_ENV"
             - name: Publish to S3
               env:
-                S3_PATH: "s3://${{ secrets.S3_BUCKET }}/$(date +%Y/%m/%d)/$(date +%H%M%S)_${{ github.sha }}_homeassistant.tar.gz.enc"
+                S3_PATH: "s3://${{ secrets.S3_BUCKET }}/$DATE_${{ github.sha }}_homeassistant.tar.gz.enc"
               run: |
                 aws s3 cp homeassistant.tar.gz.enc $S3_PATH
             - name: Save S3 path
