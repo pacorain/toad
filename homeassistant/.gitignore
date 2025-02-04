@@ -1,5 +1,9 @@
-# Ignore everything by default
+# Ignore all files by default (but not directories)
 *
+!*/
+
+# Ignore dot directories
+/.*/
 
 # Commit this file
 !.gitignore

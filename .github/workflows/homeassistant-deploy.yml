@@ -1,0 +1,49 @@
+name: Hass Deploy
+
+concurrency: homeassistant
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    deployment:
+        runs-on: ubuntu-latest
+        environment: Home
+        name: Deploy Home Assistant
+        steps:
+            - name: Check out from GitHub
+              uses: actions/checkout@v3
+            - name: Install 1Password CLI
+              uses: 1password/install-cli-action@v1
+            - name: Set up AWS
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                aws-region: us-east-1
+            - name: Inject 1Password secrets
+              env:
+                OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                OP_VAULT: ${{ vars.OP_VAULT }}
+              run: |
+                for infile in homeassistant/**/*.tpl; do
+                  outfile="${infile%.tpl}"
+                  op inject -f -i $infile -o $outfile
+                done
+            - name: Tar configuration
+              run: tar -czf - homeassistant | openssl enc -aes-256-cbc -e -k ${{ secrets.ENCRYPTION_KEY }} -out homeassistant.tar.gz.enc
+            - name: Publish to S3
+              env:
+                S3_PATH: "s3://${{ secrets.S3_BUCKET }}/$(date +%Y/%m/%d)/$(date +%H%M%S)_${{ github.sha }}_homeassistant.tar.gz.enc"
+              run: |
+                aws s3 cp homeassistant.tar.gz.enc $S3_PATH
+            - name: Save S3 path
+              id: s3path
+              run: echo "s3_path=$S3_PATH" >> $GITHUB_ENV
+            - name: Push to Home Assistant
+              # Temporarily disable this step - I need to deploy the config once to get the webhook URL
+              if: false
+              run: |
+                curl -X POST -H "Content-Type: application/json" -d "{\"presigned_url\": \"$S3_PATH\"}" ${{ secrets.WEBHOOK_CI_PUSH }}
