@@ -46,6 +46,8 @@ jobs:
                 aws s3 cp homeassistant.tar.gz.enc $S3_PATH
             - name: Get pre-signed URL
               id: presign
+              env:
+                S3_PATH: "s3://${{ secrets.S3_BUCKET }}/${{ env.DATE }}_${{ github.sha }}_homeassistant.tar.gz.enc"
               run: |
                 url=$(aws s3 presign $S3_PATH --expires-in 600)
                 echo "::add-mask::$url"
