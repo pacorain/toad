@@ -8,7 +8,7 @@ local hass_config_dir="/config"
 local tmp_dir=$(mktemp -d)
 
 local url=$1
-local encryption_key="{{ op://$HASS_VAULT_ID/config_encryption_key/value }}"
+local encryption_key="{{ op://$HASS_VAULT_ID/config_encryption_key/password }}"
 if [ -n "$2"]; then
     local skip_check="1"
 else
