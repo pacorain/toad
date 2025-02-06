@@ -1,0 +1,36 @@
+# Various stuff relating to weather
+
+input_text:
+  delay_school_district:
+    name: Delay School District
+    icon: mdi:weather-snowy
+
+# Pull in closing and delays from local news site
+rest:
+  - scan_interval: 300
+    resource: !secret local_url_news_1_wp_variables
+    
+    sensor:
+      - name: School Delay Status
+        unique_id: school_delay_status
+        value_template: |-
+          {% set closings = value_json.alert_banners.messages.Closings -%}
+          {% set matched = closings | selectattr('content', 'eq', states('input_text.delay_school_district')) | list -%}
+          {% if matched | count > 0 -%}
+            {{ (matched | first).status }}
+          {%- else -%}
+            None
+          {%- endif -%}
+    binary_sensor:
+      - name: School Delay
+        unique_id: school_delay
+        device_class: safety
+        value_template: |-
+          {% set closings = value_json.alert_banners.messages.Closings -%}
+          {% set matched = closings | selectattr('content', 'eq', states('input_text.delay_school_district')) | list -%}
+          {% if matched | count > 0 -%}
+            1
+          {%- else -%}
+            0
+          {%- endif -%}
+        
