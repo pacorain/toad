@@ -14,10 +14,10 @@ rest:
       - name: School Delay Status
         unique_id: school_delay_status
         value_template: |-
-          {% set closings = value_json.alert_banners.messages.Closings -%}
-          {% set matched = closings | selectattr('content', 'eq', states('input_text.delay_school_district')) | list -%}
+          {% set closings = value_json[0].record -%}
+          {% set matched = closings | selectattr('forced_organization_name', 'eq', states('input_text.delay_school_district')) | list -%}
           {% if matched | count > 0 -%}
-            {{ (matched | first).status }}
+            {{ (matched | first).forced_status_name }}
           {%- else -%}
             None
           {%- endif -%}
