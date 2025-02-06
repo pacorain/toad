@@ -20,6 +20,7 @@ else
 fi
 
 # Pull and decrypt the config file
+mkdir -p ${tmp_dir}/config
 curl -s -o ${tmp_dir}/config.tar.gz.enc ${url}
 openssl enc -d -aes-256-cbc -in ${tmp_dir}/config.tar.gz.enc -k "${encryption_key}" | tar -xz -C ${tmp_dir}/config
 
