@@ -35,4 +35,4 @@ if [ -z "$skip_check" ]; then
 fi
 
 # Sync the files
-rsync -av ${tmp_dir}/config/homeassistant ${hass_config_dir}
+rsync -av ${tmp_dir}/config/homeassistant/ ${hass_config_dir}/
