@@ -7,7 +7,7 @@ input_text:
 
 # Pull in closing and delays from local news site
 rest:
-  - scan_interval: 300
+  - scan_interval: 60
     resource: !secret local_url_news_1_wp_variables
     
     sensor:
@@ -26,8 +26,8 @@ rest:
         unique_id: school_delay
         device_class: safety
         value_template: |-
-          {% set closings = value_json.alert_banners.messages.Closings -%}
-          {% set matched = closings | selectattr('content', 'eq', states('input_text.delay_school_district')) | list -%}
+          {% set closings = value_json[0].record -%}
+          {% set matched = closings | selectattr('forced_organization_name', 'eq', states('input_text.delay_school_district')) | list -%}
           {% if matched | count > 0 -%}
             1
           {%- else -%}
