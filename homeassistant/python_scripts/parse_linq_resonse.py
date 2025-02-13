@@ -1,8 +1,6 @@
 """
 Parse LINQ response
 """
-print(data)
-
 def get_first(data, key, value):
     for item in data:
         if item[key] == value:
