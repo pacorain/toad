@@ -5,6 +5,7 @@ def test_rest_integrations_have_user_agent_header(compiled_config):
     """
     for domain, config in compiled_config.items():
         if domain == "rest":
+            print(config)
             for rest_config in config:
                 headers = rest_config.get("headers")
                 assert headers is not None, "Missing headers"
