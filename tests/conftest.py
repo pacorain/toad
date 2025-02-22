@@ -7,6 +7,7 @@ from homeassistant.helpers import entity
 from homeassistant.util.unit_system import METRIC_SYSTEM
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.scripts.check_config import async_check_config
 import asyncio
 import functools as ft
 from unittest.mock import Mock, AsyncMock
@@ -69,3 +70,9 @@ async def hass() -> AsyncGenerator[MockHomeAssistant]:
 
     await hass.async_stop(force=True)
     await hass.async_block_till_done()
+
+@pytest.fixture
+async def compiled_config():
+    config_dir = Path(__file__).parent.parent / "homeassistant"
+    components = await async_check_config(config_dir)
+    return components
