@@ -25,7 +25,7 @@ jobs:
               run: |
                 cp homeassistant/secrets.yaml.tpl homeassistant/secrets.yaml
             - name: Run tests
-              run: pytest -vvs --numprocesses auto --dist=loadfile
+              run: pytest -vvs # --numprocesses auto --dist=loadfile
 
     path_check:
         runs-on: ubuntu-latest
