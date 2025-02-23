@@ -21,11 +21,11 @@ jobs:
               run: |
                 pip install --upgrade pip
                 pip install .
-            - name: Copy secrets
+            - name: Install dev secrets
               run: |
-                cp homeassistant/secrets.yaml.tpl homeassistant/secrets.yaml
+                HASS_VAULT_ID=hass-dev op inject -f -i homeassistant/secrets.yaml.tpl -o homeassistant/secrets.yaml
             - name: Run tests
-              run: pytest -vvs # --numprocesses auto --dist=loadfile
+              run: pytest -vvs --numprocesses auto --dist=loadfile
 
     path_check:
         runs-on: ubuntu-latest

@@ -7,7 +7,7 @@ info_user_agent: Toad/0.0 (https://github.com/pacorain/toad {{ op://${HASS_VAULT
 # Local secrets
 
 local_url_news_1_wp_variables: op://${HASS_VAULT_ID}/local/local_url_news_1_wp_variables
-local_url_school_lunch: op://${HASS_VAULT_ID}/local/local_url_school_lunch
+local_url_school_lunch: "op://${HASS_VAULT_ID}/local/local_url_school_lunch"
 
 # Webhooks
 
