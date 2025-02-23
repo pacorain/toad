@@ -40,14 +40,13 @@ async def create_hass() -> MockHomeAssistant:
     config_dict = await conf_util.async_hass_config_yaml(hass)
     del config_dict["default_config"]
     config_dict.setdefault("http", {})
-    print(config_dict)
     await bootstrap.async_from_config_dict(config_dict, hass)
-    return hass
+    return config_dict, hass
 
 
 @pytest.fixture
 async def hass() -> AsyncGenerator[MockHomeAssistant]:
-    hass = await create_hass()
+    _, hass = await create_hass()
     await hass.async_start()
     yield hass
     await hass.check_assertions()
@@ -74,6 +73,6 @@ async def hass() -> AsyncGenerator[MockHomeAssistant]:
 
 @pytest.fixture
 async def compiled_config():
-    components = await async_check_config(CONFIG_DIR.absolute())
-    print(components)
-    return components
+    config_dict, _ = await create_hass()
+    print(config_dict)
+    return config_dict
