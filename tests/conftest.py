@@ -14,9 +14,10 @@ from unittest.mock import Mock, AsyncMock
 from homeassistant.util.async_ import create_eager_task
 from pathlib import Path
 
+CONFIG_DIR = Path(__file__).parent.parent / "homeassistant"
+
 async def create_hass() -> MockHomeAssistant:
-    config_dir = Path(__file__).parent.parent / "homeassistant"
-    hass = MockHomeAssistant(config_dir.absolute())
+    hass = MockHomeAssistant(CONFIG_DIR.absolute())
     loader.async_setup(hass)
     entity.async_setup(hass)
 
@@ -73,6 +74,5 @@ async def hass() -> AsyncGenerator[MockHomeAssistant]:
 
 @pytest.fixture
 async def compiled_config():
-    config_dir = Path(__file__).parent.parent / "homeassistant"
-    components = await async_check_config(config_dir)
+    components = await async_check_config(CONFIG_DIR.absolute())
     return components
