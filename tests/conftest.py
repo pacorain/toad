@@ -75,4 +75,5 @@ async def hass() -> AsyncGenerator[MockHomeAssistant]:
 @pytest.fixture
 async def compiled_config():
     components = await async_check_config(CONFIG_DIR.absolute())
+    print(components)
     return components
