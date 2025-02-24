@@ -27,7 +27,7 @@ jobs:
               run: |
                 cp homeassistant/secrets.yaml.tpl homeassistant/secrets.yaml
                 # Make URL secrets valid URLs
-                sed -i '' 's|^\(local_url[^:]*\):.*|\1: https://example.org|' /Users/austin/src/toad/homeassistant/secrets.yaml
+                sed -i '' 's|^\(local_url[^:]*\):.*|\1: https://example.org|' homeassistant/secrets.yaml
             - name: Run tests
               run: pytest -vvs --numprocesses auto --dist=loadfile
 
