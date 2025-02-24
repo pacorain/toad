@@ -2,7 +2,7 @@ recorder_db_url: op://${HASS_VAULT_ID}/recorder_db_url/password
 
 # Personal information
 
-info_user_agent: Toad/0.0 (https://github.com/pacorain/toad {{ op://${HASS_VAULT_ID}/owner/email }}) Home Assistant/2025.2 (https://www.home-assistant.io/integrations/rest_command/)
+info_user_agent: Toad/0.0 (https://github.com/pacorain/toad op://${HASS_VAULT_ID}/owner/email) Home Assistant/2025.2 (https://www.home-assistant.io/integrations/rest_command/)
 
 # Local secrets
 
