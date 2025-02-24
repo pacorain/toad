@@ -24,8 +24,11 @@ jobs:
                 pip install --upgrade pip
                 pip install .
             - name: Install dev secrets
+              env:
+                OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                HASS_VAULT_ID: hass-dev
               run: |
-                HASS_VAULT_ID=hass-dev op inject -f -i homeassistant/secrets.yaml.tpl -o homeassistant/secrets.yaml
+                op inject -f -i homeassistant/secrets.yaml.tpl -o homeassistant/secrets.yaml
             - name: Run tests
               run: pytest -vvs --numprocesses auto --dist=loadfile
 
