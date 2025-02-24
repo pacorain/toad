@@ -23,12 +23,11 @@ jobs:
               run: |
                 pip install --upgrade pip
                 pip install .
-            - name: Install dev secrets
-              env:
-                OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-                HASS_VAULT_ID: hass-dev
+            - name: Copy secrets
               run: |
-                op inject -f -i homeassistant/secrets.yaml.tpl -o homeassistant/secrets.yaml
+                cp homeassistant/secrets.yaml.tpl homeassistant/secrets.yaml
+                # Make URL secrets valid URLs
+                sed -i '' 's|^\(local_url[^:]*\):.*|\1: https://example.org|' /Users/austin/src/toad/homeassistant/secrets.yaml
             - name: Run tests
               run: pytest -vvs --numprocesses auto --dist=loadfile
 
