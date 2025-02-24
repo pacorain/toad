@@ -12,12 +12,13 @@ import asyncio
 import functools as ft
 from unittest.mock import Mock, AsyncMock
 from homeassistant.util.async_ import create_eager_task
+from warnings import warn
 from pathlib import Path
 
 CONFIG_DIR = Path(__file__).parent.parent / "homeassistant"
 
 async def create_hass() -> MockHomeAssistant:
-    hass = MockHomeAssistant(CONFIG_DIR.absolute())
+    hass = MockHomeAssistant(str(CONFIG_DIR.absolute()))
     loader.async_setup(hass)
     entity.async_setup(hass)
 
@@ -49,7 +50,9 @@ async def hass() -> AsyncGenerator[MockHomeAssistant]:
     _, hass = await create_hass()
     await hass.async_start()
     yield hass
-    await hass.check_assertions()
+    if hass.has_assertions():
+        warn("Unconsumed assertions")
+        await hass.check_assertions()
 
     loaded_entries = [
             entry
@@ -73,5 +76,5 @@ async def hass() -> AsyncGenerator[MockHomeAssistant]:
 
 @pytest.fixture
 async def compiled_config():
-    components = await async_check_config(CONFIG_DIR.absolute())
+    components = await async_check_config(str(CONFIG_DIR.absolute()))
     return components

@@ -8,7 +8,7 @@ def get_first(data, key, value):
     raise ValueError(f'{key} not found in data')
 
 
-lunch = get_first(json_data['FamilyMenuSessions'], 'ServingSession', 'Lunch')
+lunch = get_first(data['FamilyMenuSessions'], 'ServingSession', 'Lunch')
 days = lunch['MenuPlans'][0]['Days']
 
 for day in days:

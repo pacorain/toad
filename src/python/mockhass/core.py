@@ -8,7 +8,7 @@ class MockHomeAssistant(HomeAssistant):
         self.assertions: List[BaseAssertion] = []
 
     def assert_entity(self, entity_id: str, *, attribute: Optional[str] = None, expected: Optional[str] = None) -> EntityAssertion:
-        assertion = EntityAssertion(entity_id)
+        assertion = EntityAssertion(entity_id, hass=self)
         if attribute is not None:
             assertion.attribute(attribute)
         if expected is not None:
@@ -16,7 +16,21 @@ class MockHomeAssistant(HomeAssistant):
         self.assertions.append(assertion)
         return assertion
     
-    async def check_assertions(self):
+    def has_assertions(self) -> bool:
         for assertion in self.assertions:
-            await assertion.check(self)
+            if not assertion.checked:
+                return True
+        return False
+    
+    async def check_assertions(self):
+        # TODO: Make this parallel with asyncio.gather
+        for assertion in self.assertions:
+            await assertion.check()
         self.assertions = []
+
+    async def __aenter__(self):
+        return self
+    
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        await self.check_assertions()
+        return False
