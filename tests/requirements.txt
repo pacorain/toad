@@ -1,3 +1,5 @@
 pytest==8.3.4
 homeassistant==2025.2.1
+home-assistant-frontend==20250221.0
 pytest-asyncio==0.25.2
+xmltodict==0.13.0
