@@ -25,9 +25,7 @@ jobs:
                 pip install .
             - name: Copy secrets
               run: |
-                cp homeassistant/secrets.yaml.tpl homeassistant/secrets.yaml
-                # Make URL secrets valid URLs
-                sed -i 's|^\(local_url[^:]*\):.*|\1: https://example.org|' homeassistant/secrets.yaml
+                cp homeassistant/secrets.test.yaml homeassistant/secrets.yaml
             - name: Run tests
               run: pytest -vvs --numprocesses auto --dist=loadfile
 
