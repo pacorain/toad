@@ -9,6 +9,8 @@ input_text:
 rest:
   - scan_interval: 60
     resource: !secret local_url_news_1_wp_variables
+    headers:
+      User-Agent: !secret info_user_agent
     
     sensor:
       - name: School Delay Status
