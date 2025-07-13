@@ -1,0 +1,21 @@
+substitutions:
+  name: home-assistant-voice-0995fb
+  friendly_name: Home Assistant Voice Office
+packages:
+  Nabu Casa.Home Assistant Voice PE: !include modules/home-assistant-voice-pe/home-assistant-voice.yaml
+external_components:
+  - source:
+      type: local
+      path: modules/home-assistant-voice-pe/esphome/components
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: !secret key_voice_office
+
+
+wifi:
+  ssid: !secret iot_wifi_ssid
+  password: !secret iot_wifi_password

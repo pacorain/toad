@@ -1,0 +1,3 @@
+[submodule "modules/home-assistant-voice-pe"]
+	path = modules/home-assistant-voice-pe
+	url = https://github.com/pacorain/home-assistant-voice-pe
