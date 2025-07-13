@@ -1,0 +1,97 @@
+# Pull school lunches
+
+# Automation to run the script
+automation:
+  - alias: "Update School Lunch"
+    id: update_school_lunch
+    triggers:
+      - trigger: time
+        at: 
+          - "14:00:00"
+          - "19:00:00"
+          - "06:00:00"
+      - trigger: homeassistant
+        event: start
+    action:
+      - service: script.update_school_lunch
+
+
+# Expose an action to pull school lunches from the school's portal
+rest_command:
+  school_lunch:
+    url: !secret local_url_school_lunch
+    method: GET
+    headers: 
+      User-Agent: !secret info_user_agent
+    content_type: 'application/json'
+    timeout: 10
+
+
+# Script to parse the school lunch data
+script:
+  update_school_lunch:
+    sequence:
+      - alias: Set dates
+        variables:
+          startDate: |
+            {%- if now().hour >= 14 -%}
+            {{- (now() + timedelta(days=1)).strftime('%m/%d/%Y') }}
+            {%- else -%}
+            {{- now().strftime('%m/%d/%Y') }}
+            {%- endif -%}
+          endDate: "{{ strptime(startDate, '%m/%d/%Y') + timedelta(days=7) }}"
+      
+      - alias: Pull school lunch data
+        service: rest_command.school_lunch
+        data:
+          startDate: "{{ startDate }}"
+          endDate: "{{ endDate }}"
+        response_variable: school_lunch_data
+     
+      - alias: Check for error
+        if: |
+          "{{ school_lunch_data.status_code != 200 }}"
+        then:
+          - event: rest_failed
+            event_data:
+              status_code: "{{ school_lunch_data.status_code }}"
+              url: !secret local_url_school_lunch
+              body: "{{ school_lunch_data.content | default('') }}"
+          - stop: "Failed with status code {{ school_lunch_data.status_code }}"
+            error: true
+      
+      - alias: Parse school lunch data
+        service: python_script.parse_school_lunch
+        data: |
+          {{ school_lunch_data }}
+        response_variable: daily_lunches
+
+      - alias: Fire event to update sensors
+        event: school_lunch_updated
+        event_data:
+          daily_lunches: "{{ daily_lunches }}"
+          first_date: >-
+            {#- first template gets first key from dictionary -#}
+            {{- daily_lunches | first -}}
+
+# Template sensors
+template:
+  - trigger: 
+      - trigger: event
+        event_type: school_lunch_updated
+    sensor:
+      - name: "Next School Lunch Date"
+        state: "{{ trigger.event.data.first_date }}"
+        icon: mdi:calendar
+        unique_id: school_lunch_next_date
+        availability: "{{ trigger and trigger.event.data.daily_lunches | length > 0 }}"
+      - name: "Next School Lunch Entrees"
+        state: "{{ trigger.event.data.daily_lunches[trigger.event.data.first_date]['Main Entree'] }}"
+        icon: mdi:food-hot-dog
+        unique_id: school_lunch_next_entree
+        availability: "{{ trigger and trigger.event.data.daily_lunches | length > 0 }}"
+      - name: "Next School Lunch Sides"
+        state: "{{ trigger.event.data.daily_lunches[trigger.event.data.first_date]['Sides'] }}"
+        icon: mdi:food-fork-drink
+        unique_id: school_lunch_next_side
+        availability: "{{ trigger and trigger.event.data.daily_lunches | length > 0 }}"

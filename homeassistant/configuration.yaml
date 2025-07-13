@@ -9,6 +9,7 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+python_script:
 
 homeassistant:
   packages: !include_dir_named packages
