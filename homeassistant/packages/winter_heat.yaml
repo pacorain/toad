@@ -18,7 +18,7 @@ template:
         baseline_power_usage: 1500
         source_entity: climate.living_room_baseboard_heat
       state: >
-        {{ state_attr(variables.source_entity, 'hvac_action') == 'heating' and variables.baseline_power_usage | int or 0 }}
+        {{ state_attr(source_entity, 'hvac_action') == 'heating' and baseline_power_usage | int or 0 }}
       unit_of_measurement: W
       
     - <<: *base_estimated_power_usage
@@ -40,7 +40,7 @@ sensor:
       minutes: 1
   - <<: *base_power_usage_sensor
     name: Kitchen Heat Power Usage
-    source: sensor.kitchen_heat_estimated_power_usage
+    source: sensor.kitchen_baseboard_heat_estimated_power_usage
 
 utility_meter:
   living_room_heat_monthly:
