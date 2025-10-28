@@ -1,0 +1,66 @@
+# Winter heat
+#
+# My home has all-electric heat, with a mix of electric baseboard and cieling radiant heat.
+#
+# I have bought some MySA thermostats to control the heat, with the HomeKit Device integration to control them.
+
+# TODO: I've used anchors to simplify power usage, but I'm wondering if I can do something even 
+# simpler with custom components or by generating HASS YAML from custom YAML.
+
+# TODO: Update this as I install more MySA thermostats.
+
+# Power usage
+template:
+  - sensor:
+    - &base_estimated_power_usage
+      name: Living Room Heat Estimated Power Usage
+      variables:
+        baseline_power_usage: 1500
+        source_entity: climate.living_room_baseboard_heat
+      state: >
+        {{ state_attr(variables.source_entity, 'hvac_action') == 'heating' and variables.baseline_power_usage | int or 0 }}
+      unit_of_measurement: W
+      
+    - <<: *base_estimated_power_usage
+      name: Kitchen Baseboard Heat Estimated Power Usage
+      variables:
+        baseline_power_usage: 1000
+        source_entity: climate.kitchen_baseboard_heat
+
+sensor:
+  - &base_power_usage_sensor
+    platform: integration
+    source: sensor.living_room_heat_estimated_power_usage
+    name: Living Room Heat Power Usage
+    unit_prefix: k
+    unit_time: h
+    round: 2
+    method: left  # Best for rectangular pulses
+    max_sub_interval: 
+      minutes: 1
+  - <<: *base_power_usage_sensor
+    name: Kitchen Heat Power Usage
+    source: sensor.kitchen_heat_estimated_power_usage
+
+utility_meter:
+  living_room_heat_monthly:
+    name: Living Room Heat Monthly Power Usage
+    source: sensor.living_room_heat_power_usage
+    cycle: monthly
+  kitchen_heat_monthly:
+    name: Kitchen Heat Monthly Power Usage
+    source: sensor.kitchen_heat_power_usage
+    cycle: monthly
+
+# Power derivative
+# Helps me keep track of how well each heater is performing. Hopefully this will give me data
+# to more efficiently heat my home.
+
+sensor derivative:
+  - platform: derivative
+    source: sensor.living_room_temperature
+    name: Living Room Temperature Change Rate
+  - platform: derivative
+    source: sensor.kitchen_temperature
+    name: Kitchen Temperature Change Rate
+
