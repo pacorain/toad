@@ -7,25 +7,37 @@
 # TODO: I've used anchors to simplify power usage, but I'm wondering if I can do something even 
 # simpler with custom components or by generating HASS YAML from custom YAML.
 
-# TODO: Update this as I install more MySA thermostats.
-
 # Power usage
 template:
   - sensor:
     - &base_estimated_power_usage
       name: Living Room Heat Estimated Power Usage
       variables:
-        baseline_power_usage: 1500
+        baseline_power_usage: 1500 # 6ft baseboard heat
         source_entity: climate.living_room_baseboard_heat
       state: >
         {{ state_attr(source_entity, 'hvac_action') == 'heating' and baseline_power_usage | int or 0 }}
       unit_of_measurement: W
+      device_class: power
+      state_class: 
       
     - <<: *base_estimated_power_usage
       name: Kitchen Baseboard Heat Estimated Power Usage
       variables:
-        baseline_power_usage: 1000
+        baseline_power_usage: 1000 # 4ft baseboard heat
         source_entity: climate.kitchen_baseboard_heat
+
+    - <<: *base_estimated_power_usage
+      name: Dining Room Radiant Heat Estimated Power Usage
+      variables:
+        baseline_power_usage: 1000  # ~100 sqft of radiant heat
+        source_entity: climate.dining_room_heat
+
+    - <<: *base_estimated_power_usage
+      name: Play Room Baseboard Heat Estimated Power Usage
+      variables:
+        baseline_power_usage: 1000 # 4ft baseboard heat
+        source_entity: climate.play_room_heat
 
 sensor:
   - &base_power_usage_sensor
@@ -38,9 +50,18 @@ sensor:
     method: left  # Best for rectangular pulses
     max_sub_interval: 
       minutes: 1
+  
   - <<: *base_power_usage_sensor
     name: Kitchen Heat Power Usage
     source: sensor.kitchen_baseboard_heat_estimated_power_usage
+  
+  - <<: *base_power_usage_sensor
+    name: Dining Room Radiant Heat Power Usage
+    source: sensor.dining_room_radiant_heat_estimated_power_usage
+  
+  - <<: *base_power_usage_sensor
+    name: Play Room Baseboard Heat Power Usage
+    source: sensor.play_room_baseboard_heat_estimated_power_usage
 
 utility_meter:
   living_room_heat_monthly:
@@ -50,6 +71,14 @@ utility_meter:
   kitchen_heat_monthly:
     name: Kitchen Heat Monthly Power Usage
     source: sensor.kitchen_heat_power_usage
+    cycle: monthly
+  dining_room_heat_monthly:
+    name: Dining Room Heat Monthly Power Usage
+    source: sensor.dining_room_radiant_heat_power_usage
+    cycle: monthly
+  play_room_heat_monthly:
+    name: Play Room Heat Monthly Power Usage
+    source: sensor.play_room_baseboard_heat_power_usage
     cycle: monthly
 
 # Power derivative
@@ -63,4 +92,10 @@ sensor derivative:
   - platform: derivative
     source: sensor.kitchen_temperature
     name: Kitchen Temperature Change Rate
+  - platform: derivative
+    source: sensor.dining_room_temperature
+    name: Dining Room Temperature Change Rate
+  - platform: derivative
+    source: sensor.play_room_heat_temperature
+    name: Play Room Temperature Change Rate
 
