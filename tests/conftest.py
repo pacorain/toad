@@ -47,6 +47,9 @@ async def create_hass() -> MockHomeAssistant:
 async def hass() -> AsyncGenerator[MockHomeAssistant]:
     hass = await create_hass()
     await hass.async_start()
+    # Note: Time freezing is now opt-in per test
+    # Tests that need time mocking should call hass.freeze_time() explicitly
+    # or use hass.fast_forward() which auto-freezes
     yield hass
     await hass.check_assertions()
 
