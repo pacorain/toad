@@ -19,7 +19,7 @@ template:
         {{ state_attr(source_entity, 'hvac_action') == 'heating' and baseline_power_usage | int or 0 }}
       unit_of_measurement: W
       device_class: power
-      state_class: 
+      state_class: measurement
       
     - <<: *base_estimated_power_usage
       name: Kitchen Baseboard Heat Estimated Power Usage
