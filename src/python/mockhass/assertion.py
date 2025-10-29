@@ -13,7 +13,6 @@ class EntityAssertion(BaseAssertion):
         self.attribute = None
         self.value_to_check = None
         self.fn = None
-        # TODO: Set to False if something has changed?
         self.checked = False
 
     def attribute(self, attribute: str):
@@ -21,7 +20,7 @@ class EntityAssertion(BaseAssertion):
         return self
     
     def equals(self, expected: str):
-        # TODO: Raise an error if fn or expected exists?
+        # Configure the assertion; actual checking happens in check()
         self.fn = "equals"
         self.value_to_check = expected
         return self
