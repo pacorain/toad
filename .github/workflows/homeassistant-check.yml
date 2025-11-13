@@ -55,7 +55,7 @@ jobs:
               with:
                 path: "./homeassistant"
                 secrets: secrets.yaml.tpl
-                version: stable
+                version: 2025.10.4
 
 
 
