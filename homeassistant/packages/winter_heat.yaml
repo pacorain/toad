@@ -132,9 +132,7 @@ sensor derivative:
     name: Play Room Temperature Change Rate
   - platform: derivative
     source: sensor.room_1_temperature
-    unique_id: bed1_temperature_change_rate
     name: Room 1 Temperature Change Rate
   - platform: derivative
     source: sensor.room_2_temperature
-    unique_id: bed2_temperature_change_rate
     name: Room 2 Temperature Change Rate
