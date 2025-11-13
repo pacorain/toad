@@ -39,6 +39,20 @@ template:
         baseline_power_usage: 1000 # 4ft baseboard heat
         source_entity: climate.play_room_heat
 
+    - <<: *base_estimated_power_usage
+      name: Room 1 Baseboard Heat Estimated Power Usage
+      unique_id: bed1_energy_usage
+      variables:
+        baseline_power_usage: 1000 # ~90 sqft of radiant heat
+        source_entity: climate.bed1_heat
+      
+    - <<: *base_estimated_power_usage
+      name: Room 2 Baseboard Heat Estimated Power Usage
+      unique_id: bed2_energy_usage
+      variables:
+        baseline_power_usage: 1000 # ~90 sqft of radiant heat
+        source_entity: climate.bed2_heat
+
 sensor:
   - &base_power_usage_sensor
     platform: integration
@@ -63,6 +77,16 @@ sensor:
     name: Play Room Baseboard Heat Power Usage
     source: sensor.play_room_baseboard_heat_estimated_power_usage
 
+  - <<: *base_power_usage_sensor
+    name: Room 1 Baseboard Heat Power Usage
+    source: sensor.room_1_baseboard_heat_estimated_power_usage
+    unique_id: bed1_energy_usage
+  
+  - <<: *base_power_usage_sensor
+    name: Room 2 Baseboard Heat Power Usage
+    source: sensor.room_2_baseboard_heat_estimated_power_usage
+    unique_id: bed2_energy_usage
+
 utility_meter:
   living_room_heat_monthly:
     name: Living Room Heat Monthly Power Usage
@@ -79,6 +103,14 @@ utility_meter:
   play_room_heat_monthly:
     name: Play Room Heat Monthly Power Usage
     source: sensor.play_room_baseboard_heat_power_usage
+    cycle: monthly
+  room_1_heat_monthly:
+    name: Room 1 Heat Monthly Power Usage
+    source: sensor.room_1_baseboard_heat_power_usage
+    cycle: monthly
+  room_2_heat_monthly:
+    name: Room 2 Heat Monthly Power Usage
+    source: sensor.room_2_baseboard_heat_power_usage
     cycle: monthly
 
 # Power derivative
@@ -98,4 +130,11 @@ sensor derivative:
   - platform: derivative
     source: sensor.play_room_heat_temperature
     name: Play Room Temperature Change Rate
-
+  - platform: derivative
+    source: sensor.room_1_temperature
+    unique_id: bed1_temperature_change_rate
+    name: Room 1 Temperature Change Rate
+  - platform: derivative
+    source: sensor.room_2_temperature
+    unique_id: bed2_temperature_change_rate
+    name: Room 2 Temperature Change Rate
