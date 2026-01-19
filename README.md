@@ -2,12 +2,18 @@
 
 v3 of my Smart Home Config
 
+This is my third home automation config, built primarily on Home Assistant. This repo is like IaC for my home, and my goal is to push existing technologies and learn new ones.
+
 ---
 
 # Components
 
+This repo has several components:
+
+- [Core config](homeassistant/) - The main Home Assitant config
 - [Testing](#testing) - Unit tests and convention enforcement for config changes
 - [CI/CD](#cicd) - Automated testing and deployment
+- [Modules](modules/) - 
 
 ...more to come as I build out the config.
 
